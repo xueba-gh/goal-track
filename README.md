@@ -16,8 +16,8 @@ The whole app sits behind a master password. Nothing loads, not even the app cod
 ## What's in it
 
 - **Overview**: a live countdown to your focus goal (the CGRC exam, 29 January 2027, 9:00), a Three.js orbit where the ring fills as you finish steps and your other goals circle as moons, what's next, and a quick voice note.
-- **Goals**: Active now, Up next, Later and Achieved. Each goal has SMART fields, a website link (e.g. your practice site), a plan, notes and its wins.
-- **Plan**: every scheduled step grouped by week, filterable by goal. Missed steps show **Move it** so you can reschedule them.
+- **Goals**: Active, Up next, Later and Achieved. Each goal has SMART fields, a website link (e.g. your practice site), a plan, notes and its wins.
+- **Plan**: every scheduled step grouped by week, filterable by goal. Missed steps show **Reschedule** so you can reschedule them.
 - **Wins**: when you tick a step, you're asked how you feel and what you think. Those reflections collect here.
 - **Voice to text**: tap the mic in any note or reflection box and speak. It uses the browser's built-in speech recognition (Chrome on Android works well). Pick your accent in Settings.
 - **Reminders**: in-app and system notifications while the app is open or in the background. For alarms that fire even when the app is closed, use **Settings → Add the plan to your phone calendar**, which downloads an `.ics` file with alarms for Google Calendar.
