@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { Mic, Square } from 'lucide-react';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type SR = any;
@@ -129,34 +130,17 @@ export default function VoiceInput({ value, onChange, lang, placeholder, rows = 
             aria-pressed={recording}
             aria-label={recording ? 'Stop recording' : 'Record voice note'}
           >
-            {recording ? <StopIcon /> : <MicIcon />}
+            {recording ? <Square size={16} fill="currentColor" /> : <Mic size={20} />}
           </button>
         )}
       </div>
       {recording && (
         <p className="voice-live" aria-live="polite">
-          <span className="rec-dot" /> Listening{interim ? `: ${interim}` : '…'}
+          <span className="rec-dot" /> Recording{interim ? `: ${interim}` : ''}
         </p>
       )}
       {error && <p className="voice-error">{error}</p>}
       {!supported && <p className="hint">Voice typing isn&rsquo;t available in this browser. Chrome on Android supports it.</p>}
     </div>
-  );
-}
-
-function MicIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-      <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
-      <path d="M6 11a6 6 0 0 0 12 0M12 17v4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function StopIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
-    </svg>
   );
 }

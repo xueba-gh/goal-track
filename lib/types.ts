@@ -64,6 +64,8 @@ export interface Settings {
   notifications: boolean;
   voiceLang: string;
   focusGoalId: string;
+  /** Minutes of inactivity before the app locks. 0 = only when the 30-day session ends. */
+  autoLockMin: number;
 }
 
 export interface AppData {

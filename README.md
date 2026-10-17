@@ -4,9 +4,18 @@ A personal goal tracker: goals with SMART fields, a dated plan with reminders, n
 
 Built with Next.js 15 (App Router), TypeScript and Three.js. Deploys to Vercel with no configuration.
 
+## Security
+
+The whole app sits behind a master password. Nothing loads, not even the app code, until you unlock it.
+
+- **APP_PASSWORD** (required): your master password. Set it in Vercel under Settings, then Environment Variables, and redeploy. Until it exists, the site shows a setup notice and stays closed.
+- **AUTH_SECRET** (optional): a long random string that signs the session cookie. Without it, the password signs the cookie, so a password change signs out every device.
+- Sessions last 30 days. The app also locks itself after a period without use (30 minutes by default, adjustable in Settings), and the Lock button locks it at once.
+- Wrong passwords are slowed down, pages carry noindex headers, and robots.txt blocks search engines.
+
 ## What's in it
 
-- **Today**: a live countdown to your focus goal (the CGRC exam, 29 January 2027, 9:00), a Three.js orbit where the ring fills as you finish steps and your other goals circle as moons, what's next, and a quick voice note.
+- **Overview**: a live countdown to your focus goal (the CGRC exam, 29 January 2027, 9:00), a Three.js orbit where the ring fills as you finish steps and your other goals circle as moons, what's next, and a quick voice note.
 - **Goals**: Active now, Up next, Later and Achieved. Each goal has SMART fields, a website link (e.g. your practice site), a plan, notes and its wins.
 - **Plan**: every scheduled step grouped by week, filterable by goal. Missed steps show **Move it** so you can reschedule them.
 - **Wins**: when you tick a step, you're asked how you feel and what you think. Those reflections collect here.
@@ -33,7 +42,8 @@ Open http://localhost:3000.
 
 1. Go to https://vercel.com/new and sign in with GitHub.
 2. Import the `goal-track` repository. Vercel detects Next.js automatically.
-3. Press **Deploy**. Every push to `main` redeploys.
+3. Add the `APP_PASSWORD` environment variable.
+4. Press **Deploy**. Every push to `main` redeploys.
 
 On your phone, open the Vercel URL in Chrome and choose **Add to Home screen** to install it like an app. Allow the microphone when you first tap the mic, and turn on notifications in Settings.
 

@@ -8,12 +8,14 @@ import { isValidData } from '@/lib/store';
 import { makeSeed } from '@/lib/seed';
 import type { AppData, Goal, GoalStatus, ItemKind, Note, PlanItem, Smart } from '@/lib/types';
 import VoiceInput from './VoiceInput';
-import { Field, ItemRow, LinkIcon, PlusIcon, Sheet } from './ui';
+import { ExternalLink, Lock, Plus } from 'lucide-react';
+import { lockNow } from '@/lib/lock';
+import { Field, ItemRow, Sheet } from './ui';
 
 type Update = (fn: (d: AppData) => AppData) => void;
 
 const FEELINGS = ['Proud', 'Relieved', 'Energised', 'Grateful', 'Calm', 'Unstoppable'];
-const GOAL_COLORS = ['#f2b544', '#5cc8ff', '#ff7a6b', '#b892ff', '#7ddc8a', '#4fd1c5', '#e8d9b0', '#ff9ad5'];
+const GOAL_COLORS = ['#1f4e8c', '#2a8c82', '#b4505a', '#6c5fa7', '#4c8c4a', '#c08a2e', '#6b7280', '#3d7ea6'];
 const STATUS_LABEL: Record<GoalStatus, string> = { active: 'Active now', next: 'Up next', later: 'Later', achieved: 'Achieved' };
 
 /* ---------------------------------------------------------------- Notes */
@@ -47,7 +49,7 @@ function NoteComposer({ id, lang, onSave, label = 'Add a note' }: { id: string; 
   const [voice, setVoice] = useState(false);
   return (
     <div className="composer">
-      <VoiceInput id={id} label={label} value={text} onChange={setText} lang={lang} placeholder="Type, or tap the mic and speak" onVoiceUsed={() => setVoice(true)} />
+      <VoiceInput id={id} label={label} value={text} onChange={setText} lang={lang} placeholder="Type, or tap the microphone and speak" onVoiceUsed={() => setVoice(true)} />
       <button
         className="btn btn-quiet"
         disabled={!text.trim()}
@@ -276,7 +278,7 @@ export function WinSheet({
 
   return (
     <Sheet
-      title="Logged. Well done."
+      title="Step complete"
       onClose={onClose}
       footer={
         <>
@@ -308,7 +310,7 @@ export function WinSheet({
         onChange={setThoughts}
         lang={data.settings.voiceLang}
         rows={4}
-        placeholder="What went well? What did you learn? Speak it if you like."
+        placeholder="What went well? What did you learn?"
       />
     </Sheet>
   );
@@ -456,7 +458,7 @@ export function GoalSheet({
       </div>
       {existing?.link && (
         <a className="link-out" href={existing.link} target="_blank" rel="noreferrer">
-          <LinkIcon /> Open {existing.linkLabel || 'link'}
+          <ExternalLink size={16} /> Open {existing.linkLabel || 'link'}
         </a>
       )}
       <VoiceInput id="goal-why" label="Why this goal" value={why} onChange={setWhy} lang={lang} rows={2} />
@@ -477,11 +479,11 @@ export function GoalSheet({
               Plan <span className="mono muted">{doneCount}/{items.length} done</span>
             </h3>
             <button className="btn btn-quiet btn-sm" onClick={() => onAddItem(existing.id)}>
-              <PlusIcon /> Add
+              <Plus size={16} /> Add
             </button>
           </div>
           {visible.length ? (
-            <ul className="items">
+            <ul className="rows">
               {visible.slice(0, showDone ? undefined : 8).map((i) => (
                 <ItemRow key={i.id} item={i} goal={existing} onToggle={() => onToggleItem(i)} onOpen={() => onOpenItem(i.id)} />
               ))}
@@ -520,7 +522,7 @@ export function GoalSheet({
           <ul className="wins">
             {wins.map((w) => (
               <li key={w.id} className="win">
-                <span className="pill pill-feel">{w.feeling}</span> {w.title}
+                <span className="badge badge-feel">{w.feeling}</span> {w.title}
               </li>
             ))}
           </ul>
@@ -573,6 +575,28 @@ export function SettingsSheet({ data, update, replace, onClose }: { data: AppDat
   return (
     <Sheet title="Settings" onClose={onClose}>
       <section className="sub">
+        <h3>Security</h3>
+        <Field id="set-autolock" label="Lock after inactivity" hint="Goal Track asks for your master password again after this long without use.">
+          <select
+            id="set-autolock"
+            value={String(data.settings.autoLockMin)}
+            onChange={(e) => update((d) => ({ ...d, settings: { ...d.settings, autoLockMin: Number(e.target.value) } }))}
+          >
+            <option value="5">5 minutes</option>
+            <option value="15">15 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="60">1 hour</option>
+            <option value="240">4 hours</option>
+            <option value="0">Only after 30 days</option>
+          </select>
+        </Field>
+        <p className="hint">To change the master password, update APP_PASSWORD in Vercel and redeploy. Every device then signs out.</p>
+        <button className="btn btn-quiet btn-sm" onClick={() => lockNow()}>
+          <Lock size={16} /> Lock now
+        </button>
+      </section>
+
+      <section className="sub">
         <h3>Reminders</h3>
         <div className="setting">
           <div>
@@ -582,7 +606,7 @@ export function SettingsSheet({ data, update, replace, onClose }: { data: AppDat
                 ? 'Blocked in your browser. Allow notifications for this site in browser settings.'
                 : permission === 'unsupported'
                   ? 'This browser does not support notifications.'
-                  : 'Alerts while Goal Track is open or running in the background.'}
+                  : 'Alerts while Goal Track is open or in the background.'}
             </p>
           </div>
           <button
